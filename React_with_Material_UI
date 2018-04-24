@@ -1,0 +1,92 @@
+
+Useful Tip about importing
+
+    You can include an index.js file in any folder, and it will be accessed if the folder is imported from. 
+    This allows you to import components from their own files and export them all from the folder. 
+  
+Using material-ui
+
+    You can import every component individually from material-ui. This might be useful so that you only have 
+    what you need when you need it. You can also import them as named imports using object literal shorthand. 
+  
+  Typography
+  
+    This is the text component that you will use in material-ui. You decide its size using the 
+    variant property, which can be set to "display1", "display2", ... , "headline", etc. 
+    
+    You can set the color property as well to whatever you want. 
+    
+  Paper
+    
+    This is the equivalent of a card
+    
+  Tabs
+    
+    These are options in a dropdown. You can give them different Tabs with labels. You can also set a default
+    tab to be in use when the page is loaded. 
+    
+    ex:
+      <Paper>
+        <Tabs
+          value={0} <!-- for the first tab
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="Item one" />
+          <Tab label="Item two" />
+          <Tab label="Item three" />
+        </Tabs>
+      </Paper>
+      
+  Grid
+    
+    Allows you to split the display into multiple parts. You can just use the default sizing, which will
+    set the size of elements automatically. 
+    
+    You need an outer Grid container, and inner Grid items for this to work properly
+    You can set the sizes of all of the grid items, (in this example, they are sm for small)
+    
+    ex:
+      <Grid container>
+        <Grid item sm>
+          <Paper>
+            Left Pane
+          </Paper>
+        </Grid>
+        <Grid item sml>
+          <Paper>
+            Right Pane
+          </Paper>
+        </Grid>
+      </Grid>
+      
+    You can convert an object to an array using the new ES8 syntax
+    
+      Object.entries(obj);
+    
+      This creates an array of arrays, where the first index of each inner array is the string corresponding
+      to the objects key, and the second index is that key's value. 
+      
+    
+    You can destructure an array so that you can use names for the individual indeces that you need.
+    
+      exercises.map(([group, subExercises])); 
+          // For every array element (which is itself an array of length 2), this will grab the first inner element 
+          and name it group, and will grab the second inner element and name it subExercises. 
+    
+    
+    Dialogs
+    
+      A MUI element that works similar to a native prompt. It has DialogTitle, DialogContent, and DialogActions
+      fields where you can add content
+      
+      There is a CreateDialog version that does something
+      
+    Text Field
+      
+      Can set a multiline property, and then set rows="{a number}" to make it have several rows. 
+      
+    ***Left off at the beginning of the sixth video*** 
+    https://www.youtube.com/watch?v=v_A0wJDV5AU&index=6&list=PLcCp4mjO-z98WAu4sd0eVha1g-NMfzHZk
+  

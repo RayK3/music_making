@@ -1,0 +1,130 @@
+Tone.js 
+  Is a framework for creating interactive music in the browser. 
+  
+  Tone.Synth is a basic synthesizer with a single envelope and single oscillator
+    ex:
+      var synth = new Tone.Synth().toMaster()
+      synth.triggerAttackRelease('C4', '8n')
+  
+  triggerAttackRelease is a combination of two methods: 
+    triggerAttack: when the amplitude is rising ('key down' or 'note on' event)
+    triggerRelease: when the amplitude is going back to 0
+    
+    - takes three arguments, the first is the frequency, which can be in hertz, or in 'pitch-octave' notation,
+    like "D#2". The second is the duration, which can be in seconds, or as a tempo-relative value. The third
+    argument is when the note should be scheduled to play.
+    
+    ex:
+      var synth = new Tone.FMSynth().toMaster()
+
+      //schedule a series of notes, one per second
+      synth.triggerAttackRelease('C4', 0.5, 0)
+      synth.triggerAttackRelease('E4', 0.5, 1)
+      synth.triggerAttackRelease('G4', 0.5, 2)
+      synth.triggerAttackRelease('B4', 0.5, 3)
+      
+  Tempo-Relative
+    Instead of defining all values in seconds, any method which takes time as an argument can accept a number
+    or a string. For example "4n" is a quarter-note, "8t" is an eight-note triplet, and "1m" is one measure. 
+    These can even be composed into expressions. 
+    
+    ex:
+      var synth = new Tone.FMSynth().toMaster()
+
+      //schedule a series of notes to play as soon as the page loads
+      synth.triggerAttackRelease('C4', '4n', '8n')
+      synth.triggerAttackRelease('E4', '8n', '4n + 8n')
+      synth.triggerAttackRelease('G4', '16n', '2n')
+      synth.triggerAttackRelease('B4', '16n', '2n + 8t')
+      synth.triggerAttackRelease('G4', '16','2n + 8t * 2')
+      synth.triggerAttackRelease('E4', '2n', '0:3')
+      
+  Tone.Transport
+    Allows events to be scheduled along a seekable, restartable and editable timeline. 
+    - Tone.Transport.seconds: how far into the sound is it
+    - Tone.Transport.start(): starts the transport
+    - Tone.Transport.stop(): stops the transport
+    
+    You can schedule events to happen based off of the Transport's position using schedule and scheduleRepeat
+    
+    This is an example of scheduling events
+    ex:
+      function triggerSynth(time){
+        //the time is the sample-accurate time of the event
+        synth.triggerAttackRelease('C2', '8n', time)
+      }
+
+      //schedule a few notes
+      Tone.Transport.schedule(triggerSynth, 0)
+      Tone.Transport.schedule(triggerSynth, '0:2')
+      Tone.Transport.schedule(triggerSynth, '0:2:2.5')
+      
+      // The triggerSynth callback is called right before that time. 
+      
+      //set the transport to repeat
+      Tone.Transport.loopEnd = '1m'
+      Tone.Transport.loop = true
+      
+  Tempo
+      The Transport is the master timekeeper. It synchronizes sourdes, signals, and events along its timeline. 
+      Time expressions (like "4n" and "2:0") are evaluated against the Transport's BPM which can be set:
+      
+      Tone.Transport.bpm.value = 120
+      
+    Loops
+      Tone.loop is a simple way to create a looped callback that can be scheduled to start, stop and repeat
+      
+      ex:
+        var loop = new Tone.Loop(function(time) {
+          synth.triggerAttackRelease("C1", "8n", time)
+        }, "4n")
+        
+  Parts
+      Tone.Part allows you to schedule an array of events which can be started, stopped, and looped.
+      
+      ex:
+        var part = new Tone.Part(function(time, event) {
+          //the events will be given to the callback with the time they occur
+          synth.triggerAttackRelease(event.note, event.dur, time)
+        }, [{ time: 0, note: 'C4', dur: '4n' },
+            { time: '4n + 8n', note: 'E4', dur: '8n' },
+            { time: '2n' note: 'G4', dur: '16n' },
+            { time: '2n + 8t', note: 'B4', dur: '4n'}])
+        
+        part.start(0)
+        
+        part.loop = 3
+        part.loopEnd = '1m'
+        
+   Instruments
+       You can pass in JSON settings for any of the Tone.js instruments, effects and components to set their
+       values. The synths and effects are capable of a diverse range of sounds. 
+       
+       All instruments are monophonic (one voice) but can be made polyphonic when the constructor is passed
+       in as the second argument to Tone.PolySynth. Tone.PolySynth creates multiple instances of an instrument
+       and manages the voice allocations. 
+       ex:
+         var polySynth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+         document.querySelector('#chord').addEventListener('mousedown', function() {
+           //an array of notes can be passed into PolySynth
+           polySynth.triggerAttack(['C4', 'E4', 'G4', 'B4'])
+         })
+         
+         document.querySelector('#chord').addEventListner('mouseup', function() {
+           // the notes need to be passed into triggerRelease
+           polySynth.triggerRelease(['C4', 'E4', 'G4', 'B4'])
+         })
+   Effects
+       In the above examples, the synthesizer was always connected directly to the master output, but the output
+       of the synth could also be routed through one (or more) effects before going to the speakers. 
+       
+       ex:
+         var distortion = new Tone.Distortion(0.6)
+         var tremolo = new Tone.Tremolo().start()
+         
+         var polySynth = new Tone.PolySynth(4, Tone.Synth).chain(distortion, tremolo, Tone.Master)
+         
+      
+      
+      
+      
