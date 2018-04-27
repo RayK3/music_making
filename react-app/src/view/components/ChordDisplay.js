@@ -1,19 +1,34 @@
 import React from 'react'
-import Paper from 'material-ui/Paper'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
+import Modify from './Modify'
 
 const ChordDisplay = (props) => {
-  const { chord } = props;
-
+  const { chord, updateState, controller, style } = props;
+  function handlePlay() {
+    controller.play(chord.name);
+  }
   return (
-    <div>
+    <div style={style}>
       <Typography variant="title">
         {chord.name}
       </Typography>
-      <Button color="secondary">
-        Play
+      <Typography variant="caption">
+        {chord.notes.join(" ")}
+      </Typography>
+      <Typography variant="caption">
+        {chord.lengthStr}
+      </Typography>
+      <Button
+        color="primary"
+        onClick={handlePlay}
+      >Play
       </Button>
+      <Modify
+        updateState={updateState}
+        controller={controller}
+        chord={chord}
+      />
     </div>
   )
 }
